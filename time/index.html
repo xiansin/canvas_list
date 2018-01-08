@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>时钟</title>
+	<script type="text/javascript" src="js/data.js"></script>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			background: #336666
+		}
+		canvas{
+			display: block;
+			background: #336666;
+			margin: 100px auto;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="time"></canvas>
+	<script type="text/javascript">
+		var canvas = document.getElementById("time");
+		var ctx = canvas.getContext("2d");
+		var cW = 700;
+		var cH = 100;
+		var R = cH / (10*2) - 1;
+		var times;
+		
+		(function(){
+			times = getTime();
+		})();
+
+		canvas.width = cW;
+		canvas.height = cH;
+		
+		// 生成具体数据
+		function digit(index,num) {
+			for (var i = 0; i < data[num].length; i++) {
+				for (var j = 0; j < data[num][i].length; j++) {
+					if(data[num][i][j] == 1){
+						//console.log(j*2*(R+1)+(R+1),j*7*(R+1)+(R+1));
+						ctx.beginPath();
+						ctx.arc(index * 80 + j*2*(R+1)+(R+1),i*2*(R+1)+(R+1),R,0,Math.PI*2);
+						ctx.fillStyle = "#fff";
+						ctx.fill();
+					}
+				}
+				
+			}
+		}
+
+		function getTime(){
+			var time = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+			var data = [];
+			data.push(time[1],time[2],10,time[3],time[4],10,time[5],time[6]);
+			return data;
+		}
+
+		function updateTime(){
+			var data = getTime();
+			//console.log(data);
+			var changeTimes = [];
+			for (var i = data.length - 1; i >= 0; i--) {
+				//console.log(data[i]);
+				if(data[i] !== times[i]){
+					changeTimes.push(i+"_"+ (Number(times[i])+1));
+				}
+			}
+
+			for (var i = 0; i < changeTimes.length; i++) {
+				//console.log(changeTimes[i].split("_"));
+				renderBubble.apply(this,changeTimes[i].split("_"));
+			}
+			times = data;
+		}
+
+		//digit(0,1);
+		//renderBubble(1,2);
+
+		function renderBubble(index,num){
+			var bubble = [];
+			var colors = ["#FFCC99","#FFFF99","#99CC99","#FF9900","#FFFFCC","#0099CC","#990033"];
+			//console.log(num);
+			for (var i = 0; i < data[num].length; i++) {
+				for (var j = 0; j < data[num][i].length; j++) {
+					if(data[num][i][j] == 1){
+						bubble.push({
+							"x":index * 80 + j*2*(R+1)+(R+1),
+							"y":i*2*(R+1)+(R+1),
+							"disY":-1,
+							"mx":Math.random()*5,
+							"my":Math.random()*5,
+							"color" : colors[Math.floor(Math.random()*(colors.length))]
+						});
+						
+					}
+				}
+			}
+			reRebderDigit(bubble);
+		}
+
+		function reRebderDigit(data){
+			for (var i = 0; i < data.length; i++) {
+				data[i].y -= data[i].disY;
+				if(data[i].y < 0){
+					data[i].x += data[i].mx;
+					data[i].y += data[i].my;
+				}
+				ctx.beginPath();
+				ctx.arc(data[i].x,data[i].y,R,0,Math.PI*2);
+				ctx.fillStyle = data[i].color;
+				ctx.fill();
+			}
+		}
+
+		function render(){
+			for (var i = 0; i < times.length; i++) {
+				digit(i,times[i]);
+			}
+		}
+
+		setInterval(function(){
+			canvas.height = 100;
+			updateTime();
+			render();
+
+			//getTime();
+		},50);
+		
+
+	</script>
+</body>
+</html>

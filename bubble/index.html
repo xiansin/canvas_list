@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>bubble</title>
+	<style type="text/css">
+		html,*{
+			padding: 0;
+			margin: 0;
+		}
+		canvas{
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="bubble"></canvas>
+	<script type="text/javascript">
+		var w,h;
+		var canvas = document.querySelector("#bubble");
+		var colors = ["#FFFFCC","#99CCCC","#FFCC99","#FFCCCC"];
+		var myCanvas = canvas.getContext("2d");
+		var x,y,R=100;
+		(function setSize(){
+			window.onresize = arguments.callee;
+			w = window.innerWidth;
+			h = window.innerHeight;
+			canvas.width = w;
+			canvas.height = h;
+		})();
+
+
+		function random(min,max){
+			return Math.random() * (max - min) + min;
+		}
+
+		var Bubble = function(){};
+		var items = new Array();
+
+		canvas.onmousemove = function(){
+			x = event.clientX || event.screenX;
+			y = event.clientY || event.screenY;
+			for(var item of items){
+				var xr = item.x - x;
+				var xr1 = x - item.x;
+				var yr = item.y - y;
+				var yr1 = y - item.y;
+				if(((xr < R && xr > 0) || (xr1 < R && xr1 > 0)) 
+					&& ((yr < R && yr > 0) || (yr1 < R && yr1 > 0)) ){
+					item.r = 50;
+				}else{
+					item.r = item.R;
+				}
+			}
+		}
+		canvas.onmouseout = function(){
+			for(var item of items){
+				item.r = item.R;
+			}
+		}
+
+		Bubble.prototype = {
+			init:function(){
+				this.x = random(0,w);
+				this.y = random(0,h);
+				this.r = random(1,10);
+				this.R = this.r;
+				this.color = colors[Math.floor(random(0,4))];
+				this.mx = random(-1,1);
+				this.my = random(-1,1);
+			},
+			draw: function(){
+				myCanvas.beginPath();
+				myCanvas.arc(this.x,this.y,this.r,0,Math.PI*2);
+				myCanvas.fillStyle = this.color;
+				myCanvas.fill();
+			},
+			move:function(){
+				this.x += this.mx;
+				this.y += this.my;
+				if(this.x + this.r >= w || this.x - this.r < 0){
+					this.mx = -this.mx;
+				}
+				if(this.y + this.r >= h || this.y - this.r < 0){
+					this.my = -this.my;
+				}
+				var xr = this.x - x;
+				var xr1 = x - this.x;
+				var yr = this.y - y;
+				var yr1 = y - this.y;
+				if(xr > R || xr1 > R || yr > R || yr1 > R){
+					this.r = this.R;
+				}
+				//console.log(this.x,this.y);
+				this.draw()
+			}
+		};
+	
+		function create(num){
+			for(var i = 0;i < num; i++){
+				var item = new Bubble();
+				item.init();
+				item.draw();
+				items.push(item);
+			}
+		}
+		create(1000);
+		setInterval(function(){
+			myCanvas.clearRect(0,0,w,h);
+			for(var item of items){
+				item.move();
+			}
+		},1000/60);
+		
+	</script>
+</body>
+</html>
