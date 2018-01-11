@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>粒子特效</title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+            background: #eee;
+        }
+    </style>
+    <script src="dot-line.min.js"></script>
+</head>
+<body>
+<canvas id="dot_line"></canvas>
+<script type="text/javascript">
+    DotEffects({
+        width: window.innerWidth,
+        height: window.innerHeight,
+        disMax:500,
+        dotNum:500
+    }).start();
+</script>
+<!--<script type="text/javascript">
+    var DotLine = function () {
+        this.cW = window.innerWidth;
+        this.cH = 200;
+        this.oCanavas = document.querySelector("#dot_line");
+        this.oCanavas.width = this.cW;
+        this.oCanavas.height = this.cH;
+        this.oCtx = this.oCanavas.getContext("2d");
+        this.oCtx.globalAlpha=0.5;
+        this.dots = [];
+        this.dotNum = 500;
+        this.disMax = window.innerWidth / 10 * window.innerHeight / 8;
+
+        var mousedot = {x:null,y:null,label:'mouse'};
+        this.oCanavas.onmousemove = function(e){
+            e = e || window.event;
+            mousedot.x = e.clientX - this.oCanavas.offsetLeft;
+            mousedot.y = e.clientY - this.oCanavas.offsetTop;
+        }.bind(this);
+
+        this.oCanavas.onmouseout = function(e){
+            mousedot.x = null;
+            mousedot.y = null;
+        };
+
+        var RAF = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
+            window.setTimeout(callback, 1000 / 60);
+        };
+        this.animate = function(){
+            this.oCanavas.height = this.cH;
+            this.drawLine([mousedot].concat(this.dots));
+            RAF(this.animate);
+        }.bind(this);
+    };
+
+    DotLine.prototype = {
+        start:function(){
+            this.addDots();
+            setTimeout(function() {
+                this.animate();
+            }.bind(this), 100);
+        },
+        random: function (min, max) {
+            return Math.random() * (max - min) + min;
+        },
+        addDots: function () {
+            var dot;
+            for (var i = 0; i < this.dotNum; i++) {//参数
+                dot = {
+                    x: this.random(0, this.cW),
+                    y: this.random(0, this.cW),
+                    r: 1,
+                    color: "#333",
+                    mx: this.random(-1.5, 1.5),
+                    my: this.random(-1.5, 1.5)
+                };
+                this.dots.push(dot);
+            }
+        },
+        move:function(dot){
+            dot.x += dot.mx;
+            dot.y += dot.my;
+            if(dot.x + dot.r > this.cW || dot.x - dot.r < 0){
+                dot.mx = -dot.mx;
+            }
+            if(dot.y + dot.r > this.cH || dot.y - dot.r < 0){
+                dot.my = -dot.my;
+            }
+            //绘制点
+            this.oCtx.beginPath();
+            this.oCtx.arc(dot.x, dot.y, dot.r, 0, Math.PI*2, true);
+            this.oCtx.fillStyle = dot.color;
+            this.oCtx.fill();
+        },
+        drawLine:function(dots){
+            var nowDot;
+            var _that = this;
+            //自己的思路：遍历两次所有的点，比较点之间的距离，函数的触发放在animate里
+            this.dots.forEach(function(dot){
+                _that.move(dot);
+                for(var j=0; j<dots.length; j++){
+                    nowDot = dots[j];
+                    if(nowDot===dot||nowDot.x===null||nowDot.y===null) continue;//continue跳出当前循环开始新的循环
+                    var dx = dot.x - nowDot.x,//别的点坐标减当前点坐标
+                        dy = dot.y - nowDot.y;
+                    var dc = dx*dx + dy*dy;
+                    if(Math.sqrt(dc)>Math.sqrt(_that.disMax)) continue;
+                    // 如果是鼠标，则让粒子向鼠标的位置移动
+                    if (nowDot.label && Math.sqrt(dc) >Math.sqrt(_that.disMax)/2) {
+                        dot.x -= dx * 0.02;
+                        dot.y -= dy * 0.02;
+                    }
+                    var ratio;
+                    ratio = (_that.disMax - dc) / _that.disMax;
+
+                    _that.oCtx.beginPath();
+                    _that.oCtx.lineWidth = ratio / 2;
+                    var rgb = ["255, 153, 0","255, 102, 102","0, 153, 204","255, 102, 102","0, 153, 204","204, 0, 102","255, 102, 102"
+                    ,"102, 102, 51"];
+                    var color = rgb[Math.floor(_that.random(0,rgb.length))];
+                    color = "0,0,0";
+                    _that.oCtx.strokeStyle = 'rgba('+ color +','+ (ratio + 0.2) + ')';
+                    _that.oCtx.moveTo(dot.x, dot.y);
+                    _that.oCtx.lineTo(nowDot.x, nowDot.y);
+                    _that.oCtx.stroke();//不描边看不出效果
+
+                    //dots.splice(dots.indexOf(dot), 1);
+                }
+            });
+        }
+    };
+
+    window.onload = function () {
+        var dotLine = new DotLine().start();
+         /*dotLine.init();
+        dotLine.addDot();
+        dotLine.addDot();*/
+    }
+</script>-->
+</body>
+</html>

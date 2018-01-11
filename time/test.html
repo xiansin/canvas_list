@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>时钟</title>
+	<title>123</title>
 	<script type="text/javascript" src="js/data.js"></script>
 	<style type="text/css">
 		*{
@@ -28,12 +28,6 @@
 		var cW = 700;
 		var cH = 100;
 		var R = cH / (10*2) - 1;
-		var times;
-		
-		(function(){
-			times = getTime();
-		})();
-
 		canvas.width = cW;
 		canvas.height = cH;
 		
@@ -49,38 +43,13 @@
 						ctx.fill();
 					}
 				}
-				
-			}
-		}
 
-		function getTime(){
-			var time = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
-			var data = [];
-			data.push(time[1],time[2],10,time[3],time[4],10,time[5],time[6]);
-			return data;
-		}
-
-		function updateTime(){
-			var data = getTime();
-			//console.log(data);
-			var changeTimes = [];
-			for (var i = data.length - 1; i >= 0; i--) {
-				//console.log(data[i]);
-				if(data[i] !== times[i]){
-					changeTimes.push(i+"_"+ (Number(times[i])+1));
-				}
 			}
-
-			for (var i = 0; i < changeTimes.length; i++) {
-				//console.log(changeTimes[i].split("_"));
-				renderBubble.apply(this,changeTimes[i].split("_"));
-			}
-			times = data;
 		}
 
 		function renderBubble(index,num){
 			var bubble = [];
-			var colors = ["#FFCCCC","#CCFFFF","#FFFFCC","#CCFFFF","#FFFF99","#CCFF99","#99CC66","#CCFF99","#99CC99"];
+			var colors = ["#FFCC99","#FFFF99","#99CC99","#FF9900","#FFFFCC","#0099CC","#990033"];
 			//console.log(num);
 			for (var i = 0; i < data[num].length; i++) {
 				for (var j = 0; j < data[num][i].length; j++) {
@@ -88,28 +57,25 @@
 						bubble.push({
 							"x":index * 80 + j*2*(R+1)+(R+1),
 							"y":i*2*(R+1)+(R+1),
-							"disY": 1,
-							"mx": Math.random()*5 + 0.1,
-							"my": Math.random()*10 + 0.1,
+							"disY":1,
+							"mx":Math.random()*5,
+							"my":Math.random()*5,
 							"color" : colors[Math.floor(Math.random()*(colors.length))]
 						});
 					}
 				}
 			}
-			//console.log(bubble);
-			console.log(index);
-			clearInterval(index);
-			
-			var index = setInterval(function(){
-				reRenderDigit(bubble);
-			},50);
+			reRenderDigit(bubble);
 		}
+
+		var bubble = renderBubble(1,2);
+
 
 		function reRenderDigit(data){
 			//console.log(data);
+			data[i].y += data[i].disY;
 			for (var i = 0; i < data.length; i++) {
-				data[i].y -= data[i].disY;
-				if(data[i].disY-- < 0){
+				if(data[i].y < 0){
 					data[i].x += data[i].mx;
 					data[i].y += data[i].my;
 				}
@@ -118,23 +84,14 @@
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
 			}
+
 		}
 
-		function render(){
-			for (var i = 0; i < times.length; i++) {
-				digit(i,times[i]);
+		function updateDigit(bubble) {
+			for (var i = 0; i < bubble.length; i++) {
+				
 			}
 		}
-
-		setInterval(function(){
-			canvas.height = 100;
-			updateTime();
-			render();
-
-			//getTime();
-		},50);
-		
-
 	</script>
 </body>
 </html>

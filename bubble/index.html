@@ -18,9 +18,9 @@
 	<script type="text/javascript">
 		var w,h;
 		var canvas = document.querySelector("#bubble");
-		var colors = ["#FFFFCC","#99CCCC","#FFCC99","#FFCCCC"];
+		var colors = ["#FFFFCC","#99CCCC","#FFCC99","#FFCCCC","#FF6666","#99CCCC","#99CC66"];
 		var myCanvas = canvas.getContext("2d");
-		var x,y,R=100;
+		var x,y,xR=100,yR=60;
 		(function setSize(){
 			window.onresize = arguments.callee;
 			w = window.innerWidth;
@@ -45,9 +45,10 @@
 				var xr1 = x - item.x;
 				var yr = item.y - y;
 				var yr1 = y - item.y;
-				if(((xr < R && xr > 0) || (xr1 < R && xr1 > 0)) 
-					&& ((yr < R && yr > 0) || (yr1 < R && yr1 > 0)) ){
-					item.r = 50;
+				if(((xr < xR && xr > 0) || (xr1 < xR && xr1 > 0)) 
+					&& ((yr < yR && yr > 0) || (yr1 < yR && yr1 > 0)) ){
+					item.r = item.R;
+					item.r *= 8;
 				}else{
 					item.r = item.R;
 				}
@@ -65,7 +66,7 @@
 				this.y = random(0,h);
 				this.r = random(1,10);
 				this.R = this.r;
-				this.color = colors[Math.floor(random(0,4))];
+				this.color = colors[Math.floor(random(0,colors.length))];
 				this.mx = random(-1,1);
 				this.my = random(-1,1);
 			},
@@ -88,7 +89,7 @@
 				var xr1 = x - this.x;
 				var yr = this.y - y;
 				var yr1 = y - this.y;
-				if(xr > R || xr1 > R || yr > R || yr1 > R){
+				if(xr > xR || xr1 > xR || yr > yR || yr1 > yR){
 					this.r = this.R;
 				}
 				//console.log(this.x,this.y);
