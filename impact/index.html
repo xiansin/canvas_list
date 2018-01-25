@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>impact</title>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        canvas{
+            display: block;
+            background: #eee;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="impact"></canvas>
+    <script type="text/javascript">
+        var oImpact = document.querySelector("#impact");
+        var myCanvas = oImpact.getContext("2d");
+        var w = 300;
+        var h = 200;
+        var x,y,xR=100,yR=60;
+        oImpact.width = w;
+        oImpact.height = h;
+
+        function random(min,max){
+            return Math.random() * (max - min) + min;
+        }
+
+        var Bubble = function () {
+
+        };
+        var colors = ["#FFFFCC","#99CCCC","#FFCC99","#FFCCCC","#FF6666","#99CCCC","#99CC66"];
+
+        Bubble.prototype = {
+            init:function(){
+                this.x = random(0,w);
+                this.y = random(0,h);
+                this.r = 20;
+                this.R = this.r;
+                this.color = colors[Math.floor(random(0,colors.length))];
+                this.mx = random(1,2);
+                this.my = random(1,2);
+            },
+            draw: function(){
+                myCanvas.beginPath();
+                myCanvas.arc(this.x,this.y,this.r,0,Math.PI*2);
+                myCanvas.fillStyle = this.color;
+                myCanvas.fill();
+            },
+            move:function(){
+                this.x += this.mx;
+                this.y += this.my;
+                if(this.x + this.r >= w || this.x - this.r < 0){
+                    this.mx = -this.mx;
+                }
+                if(this.y + this.r >= h || this.y - this.r < 0){
+                    this.my = -this.my;
+                }
+                var xr = this.x - x;
+                var xr1 = x - this.x;
+                var yr = this.y - y;
+                var yr1 = y - this.y;
+                if(xr > xR || xr1 > xR || yr > yR || yr1 > yR){
+                    this.r = this.R;
+                }
+                //console.log(this.x,this.y);
+                this.draw()
+            },
+            impact:function () {
+                items.forEach(function (item) {
+                    if(item !== this){
+                        var gap = Math.sqrt(Math.pow(item.x-this.x,2) + Math.pow(this.y-item.y,2));
+                        if(Math.floor(gap) <= Math.floor(item.r + this.r) + 1){
+                            console.log(Math.floor(gap),Math.floor(item.r + this.r));
+                            if(item.x > this.x || this.x  > item.x){
+                                this.my = -this.my;
+                                item.my = -item.my;
+                            }else if(item.y > this.y || this.y > item.y){
+                                this.mx = -this.mx;
+                                item.mx = -item.mx;
+                            }
+                        }
+                    }
+
+                }.bind(this));
+            }
+        };
+        var items = [];
+        function create(num){
+            for(var i = 0;i < num; i++){
+                var item = new Bubble();
+                item.init();
+                item.draw();
+                items.push(item);
+            }
+        }
+        create(2);
+
+        setInterval(function(){
+            myCanvas.clearRect(0,0,w,h);
+            for(var item of items){
+                item.impact();
+                item.move();
+            }
+        },1000/60);
+
+    </script>
+</body>
+</html>
