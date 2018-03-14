@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>泡泡</title>
+	<link rel="stylesheet" href="">
+</head>
+<style type="text/css">
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	canvas{
+		background: #222;
+		display: block;
+	}
+</style>
+<body>
+	<canvas id="canvas"></canvas>
+	<script>
+
+		~~function setSize(){
+			window.onresize = arguments.callee;
+			var canvas = document.getElementById("canvas");
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+
+		}();
+		
+		function Ball(x,y){
+			this.oCanvas = document.getElementById("canvas");
+			this.ctx = this.oCanvas.getContext("2d");
+			this.colors = ["#CC9999","#FFFFCC","#CCCC99","#FFCC99","#99CCFF","#FFFFCC"];
+			this.alpha = 1;
+			this.x = x;
+			this.y = y;
+			this.r = 30;
+			this.vx = random(-5,5);
+			this.vy = random(-5,5);
+			this.vr = random(-1,0);
+			this.vAlpha = 0.95;
+		}
+
+		Ball.prototype = {
+			draw: function(){
+				this.ctx.beginPath();
+				
+				this.ctx.fillStyle = this.colors[Math.floor(random(0,this.colors.length))];
+				this.ctx.globalAlpha = this.alpha;
+				this.ctx.globalCompositeOperation = "lighter";
+				this.ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+				this.ctx.fill();
+			},
+			update: function(){
+				this.x += this.vx;
+				this.y += this.vy;
+				this.r += this.vr;
+				this.alpha *= this.vAlpha;
+				if(this.r < 0) this.r = 0;
+			},
+			render: function(){
+				
+			},
+			
+		};
+		var arrList = [];
+
+		function render() {
+			var oCanvas = document.getElementById("canvas");
+			var ctx = oCanvas.getContext("2d");
+			ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+			arrList.forEach(function(obj){
+				obj.draw();
+				obj.update();
+			});
+			if(arrList.length > 150) arrList.shift();
+			requestAnimationFrame(render);
+		}
+		render();
+
+		document.getElementById("canvas").addEventListener("mousemove",function(e){
+			arrList.push(new Ball(e.clientX,e.clientY));
+		});
+
+		function random(min,max){
+			return (max - min) * Math.random() + min;
+		}
+
+	</script>
+</body>
+</html>

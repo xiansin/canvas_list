@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>刮刮卡</title>
+    <style type="text/css">
+        *{padding: 0;margin: 0}
+        canvas{
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas width="200" height="120" id="canvas"></canvas>
+    <canvas width="200" height="120" id="canvas_1"></canvas>
+    <script type="text/javascript">
+        var cvs = document.getElementById("canvas");
+        var cvs1 = document.getElementById("canvas_1");
+        //创建image对象
+        var imgObj = new Image();
+        imgObj.src = "bg.png";
+        //待图片加载完后，将其显示在canvas上
+        imgObj.onload = function(){
+            var ctx = cvs.getContext('2d');
+            ctx.drawImage(this, 0, 0);//this即是imgObj,保持图片的原始大小：470*480
+            //ctx.drawImage(this, 0, 0,1024,768);//改变图片的大小到1024*768
+        };
+        cvs1.onmousemove = function (e) {
+            console.log(e)
+        }
+    </script>
+</body>
+</html>

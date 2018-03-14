@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>平面坐标系</title>
+    <script src="js/three.js"></script>
+    <style type="text/css">
+        *{
+            margin: 0;
+        }
+        #canvas_frame{
+            height: 600px;
+            width: 100vh;
+        }
+    </style>
+</head>
+<body onload="threeStart()">
+    <div id="canvas_frame"></div>
+    <script>
+        /*
+            scene 场景
+            camera 相机
+            render 渲染
+         */
+        var oCanvas = document.getElementById("canvas_frame");
+        var width = oCanvas.clientWidth;
+        var height = oCanvas.clientHeight;
+        var renderer;
+        var camera;
+        var scene;
+        var light;
+
+        function initThree() {
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.setSize(width,height);
+            oCanvas.appendChild(renderer.domElement);
+            renderer.setClearColor(0xFFFFFF, 1.0);
+        }
+
+        function initCamera() {
+            // 远景相机 PerspectiveCamera
+            camera = new THREE.PerspectiveCamera(45,width/height,1,1000);
+            camera.position.x = 0;
+            camera.position.y = 1000;
+            camera.position.z = 0;
+            camera.up.x = 0;
+            camera.up.y = 0;
+            camera.up.z = 1;
+            camera.lookAt(0, 0, 0);
+        }
+
+        function initScene() {
+            scene = new THREE.Scene();
+        }
+
+        function initLight() {
+            light = new THREE.DirectionalLight(0xFF0000, 1.0, 0);
+            light.position.set(100, 100, 200);
+            scene.add(light);
+        }
+
+
+        function initObject(){
+            // 几何体
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push( new THREE.Vector3( - 500, 0, 0 ) );
+            geometry.vertices.push( new THREE.Vector3( 500, 0, 0 ) );
+            for ( var i = 0; i <= 30; i ++ ) {
+
+                var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0xff0000, opacity: 1 } ) );
+                line.position.z = ( i * 50 ) - 500;
+                scene.add( line );
+
+                line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.1 } ) );
+                line.position.x = ( i * 50 ) - 500;
+                line.rotation.y = 90 * Math.PI / 180;
+                scene.add( line );
+
+            }
+        }
+
+        function threeStart() {
+            initThree();
+            initCamera();
+            initScene();
+            initLight();
+            initObject();
+            renderer.clear();
+            renderer.render(scene, camera);
+        }
+
+
+    </script>
+</body>
+</html>
